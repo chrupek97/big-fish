@@ -13,7 +13,7 @@ div {
   -moz-box-shadow: 0px 0px 5px 0px rgba(66, 68, 90, 1);
   box-shadow: 0px 0px 5px 0px rgba(66, 68, 90, 1);
   width: 250px;
-  height: 400px;
+  height: 450px;
   /* width: min(500px, 100%); */
 }
 </style>
