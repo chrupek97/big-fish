@@ -7,7 +7,7 @@
 <style scoped>
 div {
   margin: 2rem;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 0.25rem;
   -webkit-box-shadow: 0px 0px 5px 0px rgba(66, 68, 90, 1);
   -moz-box-shadow: 0px 0px 5px 0px rgba(66, 68, 90, 1);

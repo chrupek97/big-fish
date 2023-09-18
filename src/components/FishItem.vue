@@ -1,22 +1,24 @@
 <template>
   <base-card>
-    <img :src="imageUrl" />
+    <div class="image-box">
+      <img :src="imageUrl" />
+    </div>
     <div class="info-box">
       <div class="caption-box">
         <div class="bold">Wyłowił</div>
-        <div>{{ owner }}</div>
+        <div class="value">{{ owner }}</div>
       </div>
       <div class="caption-box">
         <div class="bold">Waga</div>
-        <div>{{ weight }} kg</div>
+        <div class="value">{{ weight }} kg</div>
       </div>
       <div class="caption-box">
         <div class="bold">Ryba</div>
-        <div>{{ type }}</div>
+        <div class="value">{{ type }}</div>
       </div>
       <div class="caption-box">
         <div class="bold">Przynęta</div>
-        <div>{{ bait }}</div>
+        <div class="value">{{ bait }}</div>
       </div>
       <div>{{ additionalInfo }}</div>
     </div>
@@ -28,10 +30,13 @@
 
 <script>
 export default {
-  props: ["id", "owner", "weight", "type", "bait", "additionalInfo", "imageUrl", "date"],
+  props: ["id", "owner", "weight", "type", "bait", "additionalInfo", "imageName", "date"],
   computed: {
     formattedDate() {
       return this.date.toLocaleString("pl-PL");
+    },
+    imageUrl() {
+      return `https://firebasestorage.googleapis.com/v0/b/big-fish-79423.appspot.com/o/${this.imageName}?alt=media&token=7748ae36-118b-441c-aafc-bc827bda53e1`;
     },
   },
 };
@@ -44,6 +49,10 @@ div {
 
 ul {
   list-style: none;
+}
+
+.value {
+  text-align: right;
 }
 
 .bold {
@@ -70,7 +79,7 @@ ul {
 .bottom-box {
   font-weight: bold;
   position: absolute;
-  padding: .5rem;
+  padding: 0.5rem;
   left: 0;
   right: 0;
   bottom: 0px;
@@ -79,9 +88,17 @@ ul {
 }
 
 img {
+  object-fit: cover;
   width: 100%;
+  height: 100%;
+  /* min-height: 100px; */
+}
+
+.image-box {
   position: absolute;
-  left: 0;
   top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
 }
 </style>
