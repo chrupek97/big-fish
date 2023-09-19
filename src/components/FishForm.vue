@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="bottom-box">
-        <button class="btn-primary" type="submit">Dodaj</button>
+        <button class="btn-secondary" type="submit">Dodaj</button>
       </div>
     </form>
   </base-card>
@@ -90,6 +90,9 @@ export default {
 </script>
 
 <style scoped>
+form {
+  /* position: relative; */
+}
 input {
   width: 150px;
   border: 1px solid;

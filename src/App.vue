@@ -1,25 +1,28 @@
 <template>
-  <header></header>
-  <main>
-    <grid-layout v-if="!isLoading">
-      <fish-form :addNewFish="addNewFish"></fish-form>
-      <fish-item
-        v-for="fish in fishes"
-        :key="fish.id"
-        :id="fish.id"
-        :owner="fish.owner"
-        :weight="fish.weight"
-        :type="fish.type"
-        :bait="fish.bait"
-        :additionalInfo="fish.additionalInfo"
-        :imageName="fish.imageName"
-        :date="fish.date"
-      ></fish-item>
-    </grid-layout>
-    <grid-layout v-else>
-      <div>Loading ...</div>
-    </grid-layout>
-  </main>
+  <body>
+    <header></header>
+    <main>
+      <search-box :filterFishes="filterFishes"></search-box>
+      <grid-layout v-if="!isLoading">
+        <fish-form :addNewFish="addNewFish"></fish-form>
+        <fish-item
+          v-for="fish in filteredFishes"
+          :key="fish.id"
+          :id="fish.id"
+          :owner="fish.owner"
+          :weight="fish.weight"
+          :type="fish.type"
+          :bait="fish.bait"
+          :additionalInfo="fish.additionalInfo"
+          :imageName="fish.imageName"
+          :date="fish.date"
+        ></fish-item>
+      </grid-layout>
+      <grid-layout v-else>
+        <div>Loading ...</div>
+      </grid-layout>
+    </main>
+  </body>
 </template>
 
 <script>
@@ -28,6 +31,7 @@ import axios from "axios";
 import FishItem from "./components/FishItem.vue";
 import GridLayout from "./components/layout/GridLayout.vue";
 import FishForm from "./components/FishForm.vue";
+import SearchBox from "./components/SearchBox.vue";
 // import BaseSpinner from "./components/UI/BaseSpinner.vue";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
@@ -37,6 +41,7 @@ export default {
     FishItem,
     FishForm,
     GridLayout,
+    SearchBox,
     // BaseSpinner
   },
 
@@ -55,9 +60,9 @@ export default {
         additionalInfo: responseData[key].additionalInfo,
         imageName: responseData[key].imageName,
       };
-      console.log(responseData[key])
       this.fishes.push(fish);
     }
+    this.filteredFishes = this.fishes;
     this.isLoading = false;
   },
 
@@ -66,10 +71,26 @@ export default {
       isLoading: true,
       isAdding: false,
       fishes: [],
+      filteredFishes: [],
     };
   },
-
   methods: {
+    filterFishes(owner, type, minWeight, maxWeight) {
+      let filteredFishes = [...this.fishes];
+      if (owner && owner !== "") {
+        filteredFishes = filteredFishes.filter((fish) => fish.owner === owner);
+      }
+      if (type && type !== "") {
+        filteredFishes = filteredFishes.filter((fish) => fish.type === type);
+      }
+      if (minWeight && minWeight !== "") {
+        filteredFishes = filteredFishes.filter((fish) => fish.weight >= minWeight);
+      }
+      if (maxWeight && maxWeight !== "") {
+        filteredFishes = filteredFishes.filter((fish) => fish.weight <= maxWeight);
+      }
+      this.filteredFishes = filteredFishes;
+    },
     async insertImageToStore(file) {
       const app = initializeApp(firebaseConfig);
       const storage = getStorage(app);
@@ -77,7 +98,7 @@ export default {
       try {
         await uploadBytes(storageRef, file);
       } catch (e) {
-        throw Error('aaa')
+        throw Error("aaa");
       }
     },
     async addFish(fish) {
@@ -104,7 +125,7 @@ export default {
     async addNewFish(file, fish) {
       await this.insertImageToStore(file);
       await this.addFish(fish);
-    }
+    },
   },
 };
 </script>
