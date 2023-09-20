@@ -3,6 +3,7 @@
     <header></header>
     <main>
       <search-box :filterFishes="filterFishes"></search-box>
+      <h1>Ryby</h1>
       <grid-layout v-if="!isLoading">
         <fish-form :addNewFish="addNewFish"></fish-form>
         <fish-item
@@ -21,6 +22,11 @@
       <grid-layout v-else>
         <div>Loading ...</div>
       </grid-layout>
+      <summary-box
+        :totalWeight="totalWeight"
+        :fishCount="fishCount"
+        :maxFishWeight="maxFishWeight"
+      ></summary-box>
     </main>
   </body>
 </template>
@@ -32,9 +38,10 @@ import FishItem from "./components/FishItem.vue";
 import GridLayout from "./components/layout/GridLayout.vue";
 import FishForm from "./components/FishForm.vue";
 import SearchBox from "./components/SearchBox.vue";
+import SummaryBox from "./components/SummaryBox.vue";
 // import BaseSpinner from "./components/UI/BaseSpinner.vue";
 import { initializeApp } from "firebase/app";
-import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 export default {
   components: {
@@ -42,6 +49,7 @@ export default {
     FishForm,
     GridLayout,
     SearchBox,
+    SummaryBox,
     // BaseSpinner
   },
 
@@ -63,6 +71,9 @@ export default {
       this.fishes.push(fish);
     }
     this.filteredFishes = this.fishes;
+    this.totalWeight = this.filteredFishes.reduce((acc, fish) => acc + fish.weight, 0);
+    this.fishCount = this.filteredFishes.length;
+    this.maxFishWeight = Math.max(...this.filteredFishes.map((fish) => fish.weight));
     this.isLoading = false;
   },
 
@@ -72,6 +83,9 @@ export default {
       isAdding: false,
       fishes: [],
       filteredFishes: [],
+      totalWeight: 0,
+      fishCount: 0,
+      maxFishWeight: 0,
     };
   },
   methods: {
@@ -90,6 +104,8 @@ export default {
         filteredFishes = filteredFishes.filter((fish) => fish.weight <= maxWeight);
       }
       this.filteredFishes = filteredFishes;
+      this.totalWeight = this.filteredFishes.reduce((acc, fish) => acc + fish.weight, 0);
+      this.fishCount = this.filteredFishes.length;
     },
     async insertImageToStore(file) {
       const app = initializeApp(firebaseConfig);
@@ -131,6 +147,10 @@ export default {
 </script>
 
 <style>
+h1 {
+  font-size: 1.5rem;
+  text-align: center;
+}
 button {
   padding: 0.25rem 2rem;
   border-radius: 0.25rem;

@@ -31,7 +31,6 @@ export default {
   },
   methods: {
     submitForm() {
-      console.log('xd')
       this.filterFishes(this.owner, this.type, this.minWeight, this.maxWeight)
     },
   },
@@ -40,7 +39,7 @@ export default {
 
 <style scoped>
 .search-box {
-  background: #ebecef;
+  background: var(--gray-color);
   display: flex;
   justify-content: center;
   padding: 2rem 2rem;

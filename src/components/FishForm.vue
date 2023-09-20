@@ -1,55 +1,65 @@
 <template>
-  <div v-if="isAdding">
-    <base-spinner></base-spinner>
-  </div>
-  <base-card>
-    <form @submit.prevent="submitForm">
-      <div class="top-box">
-        <input type="file" id="myFile" name="filename" @change="onFileChange" />
-      </div>
-      <div class="info-box">
-        <div class="caption-box">
-          <div class="bold">Wyłowił</div>
-          <div><input type="text" required minlength="3" v-model="newFish.owner" /></div>
+  <div>
+    <div v-if="isAdding">
+      <base-spinner></base-spinner>
+    </div>
+    <base-card>
+      <form @submit.prevent="submitForm">
+        <div class="top-box">
+          <input type="file" id="myFile" name="filename" @change="onFileChange" />
         </div>
-        <div class="caption-box">
-          <div class="bold">Waga</div>
-          <div>
-            <input type="number" step="0.1" min="0.1" required v-model="newFish.weight" />
+        <div class="info-box">
+          <div class="caption-box">
+            <div class="bold">Wyłowił</div>
+            <div>
+              <input type="text" required minlength="3" v-model="newFish.owner" />
+            </div>
+          </div>
+          <div class="caption-box">
+            <div class="bold">Waga</div>
+            <div>
+              <input
+                type="number"
+                step="0.1"
+                min="0.1"
+                required
+                v-model="newFish.weight"
+              />
+            </div>
+          </div>
+          <div class="caption-box">
+            <div class="bold">Ryba</div>
+            <div><input type="text" minlength="4" required v-model="newFish.type" /></div>
+          </div>
+          <div class="caption-box">
+            <div class="bold">Przynęta</div>
+            <div><input type="text" minlength="4" required v-model="newFish.bait" /></div>
+          </div>
+          <div class="caption-box">
+            <div class="bold">Data</div>
+            <div><input type="date" required v-model="newFish.date" /></div>
+          </div>
+          <div class="description-box">
+            <textarea
+              rows="5"
+              placeholder="Dodatkowe informacje (opcjonalnie)"
+              v-model="newFish.additionalInfo"
+            />
           </div>
         </div>
-        <div class="caption-box">
-          <div class="bold">Ryba</div>
-          <div><input type="text" minlength="4" required v-model="newFish.type" /></div>
+        <div class="bottom-box">
+          <button class="btn-secondary" type="submit">Dodaj</button>
         </div>
-        <div class="caption-box">
-          <div class="bold">Przynęta</div>
-          <div><input type="text" minlength="4" required v-model="newFish.bait" /></div>
-        </div>
-        <div class="caption-box">
-          <div class="bold">Data</div>
-          <div><input type="date" required v-model="newFish.date" /></div>
-        </div>
-        <div class="description-box">
-          <textarea
-            rows="5"
-            placeholder="Dodatkowe informacje (opcjonalnie)"
-            v-model="newFish.additionalInfo"
-          />
-        </div>
-      </div>
-      <div class="bottom-box">
-        <button class="btn-secondary" type="submit">Dodaj</button>
-      </div>
-    </form>
-  </base-card>
+      </form>
+    </base-card>
+  </div>
 </template>
 
 <script>
 import BaseSpinner from "../components/UI/BaseSpinner.vue";
 export default {
   components: {
-    BaseSpinner
+    BaseSpinner,
   },
   data() {
     return {
