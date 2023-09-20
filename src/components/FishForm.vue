@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div v-if="isAdding">
-      <base-spinner></base-spinner>
-    </div>
     <base-card>
       <form @submit.prevent="submitForm">
         <div class="top-box">
@@ -56,14 +53,9 @@
 </template>
 
 <script>
-import BaseSpinner from "../components/UI/BaseSpinner.vue";
 export default {
-  components: {
-    BaseSpinner,
-  },
   data() {
     return {
-      isAdding: false,
       imageFile: {},
       newFish: {
         owner: "",
@@ -76,7 +68,7 @@ export default {
       },
     };
   },
-  props: ["addNewFish"],
+  props: ["addNewFish", "setIsEditing"],
   methods: {
     onFileChange(e) {
       const files = e.target.files || e.dataTransfer.files;
@@ -84,16 +76,16 @@ export default {
       this.imageFile = files[0];
     },
     async submitForm() {
-      this.isAdding = true;
+      this.setIsEditing(true);
       await this.addNewFish(this.imageFile, this.newFish);
-      // this.newFish.owner = "";
-      // this.newFish.weight = "";
-      // this.newFish.type = "";
-      // this.newFish.bait = "";
-      // this.newFish.date = "";
-      // this.newFish.imageName = "";
-      // this.newFish.additionalInfo = "";
-      this.isAdding = false;
+      this.newFish.owner = "";
+      this.newFish.weight = "";
+      this.newFish.type = "";
+      this.newFish.bait = "";
+      this.newFish.date = "";
+      this.newFish.imageName = "";
+      this.newFish.additionalInfo = "";
+      this.setIsEditing(false);
     },
   },
 };

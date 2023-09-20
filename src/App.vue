@@ -2,11 +2,18 @@
   <body>
     <header></header>
     <main>
-      <image-preview :imageUrl="imageUrl" :setImageUrl="setImageUrl" v-if="imageUrl !== ''"></image-preview>
+      <div v-if="isEditing">
+        <base-spinner></base-spinner>
+      </div>
+      <image-preview
+        :imageUrl="imageUrl"
+        :setImageUrl="setImageUrl"
+        v-if="imageUrl !== ''"
+      ></image-preview>
       <search-box :filterFishes="filterFishes"></search-box>
       <h1>Ryby</h1>
       <grid-layout v-if="!isLoading">
-        <fish-form :addNewFish="addNewFish"></fish-form>
+        <fish-form :addNewFish="addNewFish" :setIsEditing="setIsEditing"></fish-form>
         <fish-item
           v-for="fish in filteredFishes"
           :key="fish.id"
@@ -19,6 +26,8 @@
           :imageName="fish.imageName"
           :date="fish.date"
           :setImageUrl="this.setImageUrl"
+          :deleteFish="this.deleteFish"
+          :setIsEditing="this.setIsEditing"
         ></fish-item>
       </grid-layout>
       <grid-layout v-else>
@@ -41,6 +50,7 @@ import GridLayout from "./components/layout/GridLayout.vue";
 import FishForm from "./components/FishForm.vue";
 import SearchBox from "./components/SearchBox.vue";
 import SummaryBox from "./components/SummaryBox.vue";
+import BaseSpinner from "./components/UI/BaseSpinner.vue";
 import ImagePreview from "./components/ImagePreview.vue";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
@@ -53,7 +63,7 @@ export default {
     SearchBox,
     SummaryBox,
     ImagePreview,
-    // BaseSpinner
+    BaseSpinner,
   },
 
   async created() {
@@ -63,6 +73,7 @@ export default {
 
     for (const key in responseData) {
       const fish = {
+        id: key,
         owner: responseData[key].owner,
         weight: responseData[key].weight,
         type: responseData[key].type,
@@ -83,19 +94,22 @@ export default {
   data() {
     return {
       isLoading: true,
-      isAdding: false,
+      isEditing: false,
       fishes: [],
       filteredFishes: [],
       totalWeight: 0,
       fishCount: 0,
       maxFishWeight: 0,
-      imageUrl: '',
+      imageUrl: "",
     };
   },
   methods: {
-    setImageUrl(imageUrl){
-      this.imageUrl = imageUrl
-    },  
+    setIsEditing(isEditing) {
+      this.isEditing = isEditing;
+    },
+    setImageUrl(imageUrl) {
+      this.imageUrl = imageUrl;
+    },
     filterFishes(owner, type, minWeight, maxWeight) {
       let filteredFishes = [...this.fishes];
       if (owner && owner !== "") {
@@ -128,6 +142,7 @@ export default {
       const url = "https://big-fish-79423-default-rtdb.firebaseio.com/fishes.json";
       try {
         const newFish = {
+          id: fish.id,
           owner: fish.owner,
           weight: fish.weight,
           type: fish.type,
@@ -148,6 +163,14 @@ export default {
     async addNewFish(file, fish) {
       await this.insertImageToStore(file);
       await this.addFish(fish);
+    },
+    async deleteFish(fishId) {
+      const url = `https://big-fish-79423-default-rtdb.firebaseio.com/fishes/${fishId}.json`;
+      await fetch(url, {
+        method: "DELETE",
+      });
+      this.fishes = this.fishes.filter((fish) => fish.id !== fishId);
+      this.filteredFishes = this.filteredFishes.filter((fish) => fish.id !== fishId);
     },
   },
 };
@@ -183,6 +206,15 @@ button {
 }
 
 .btn-secondary:hover {
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: var(--red-color);
+  border: 1px solid var(--red-color);
+}
+
+.btn-danger:hover {
   cursor: pointer;
 }
 </style>

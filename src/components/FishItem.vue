@@ -1,31 +1,36 @@
 <template>
-  <base-card>
-    <div class="image-box" @click="onClickImage">
-      <img :src="imageUrl" />
-    </div>
-    <div class="info-box">
-      <div class="caption-box">
-        <div class="bold">Wyłowił</div>
-        <div class="value">{{ owner }}</div>
+  <div>
+    <base-card class="card">
+      <div class="image-box" @click="onClickImage">
+        <img :src="imageUrl" />
       </div>
-      <div class="caption-box">
-        <div class="bold">Waga</div>
-        <div class="value">{{ weight }} kg</div>
+      <div class="info-box">
+        <div class="caption-box">
+          <div class="bold">Wyłowił</div>
+          <div class="value">{{ owner }}</div>
+        </div>
+        <div class="caption-box">
+          <div class="bold">Waga</div>
+          <div class="value">{{ weight }} kg</div>
+        </div>
+        <div class="caption-box">
+          <div class="bold">Ryba</div>
+          <div class="value">{{ type }}</div>
+        </div>
+        <div class="caption-box">
+          <div class="bold">Przynęta</div>
+          <div class="value">{{ bait }}</div>
+        </div>
+        <div>{{ additionalInfo }}</div>
       </div>
-      <div class="caption-box">
-        <div class="bold">Ryba</div>
-        <div class="value">{{ type }}</div>
+      <div class="bottom-box">
+        <div>{{ formattedDate }}</div>
       </div>
-      <div class="caption-box">
-        <div class="bold">Przynęta</div>
-        <div class="value">{{ bait }}</div>
+      <div class="buttons-box">
+        <button class="btn btn-danger" @click="removeFish">Usuń</button>
       </div>
-      <div>{{ additionalInfo }}</div>
-    </div>
-    <div class="bottom-box">
-      <div>{{ formattedDate }}</div>
-    </div>
-  </base-card>
+    </base-card>
+  </div>
 </template>
 
 <script>
@@ -40,10 +45,17 @@ export default {
     "imageName",
     "date",
     "setImageUrl",
+    "deleteFish",
+    "setIsEditing"
   ],
   methods: {
     onClickImage() {
-      this.setImageUrl(this.imageUrl)
+      this.setImageUrl(this.imageUrl);
+    },
+    async removeFish() {
+      this.setIsEditing(true)
+      await this.deleteFish(this.id);
+      this.setIsEditing(false)
     },
   },
   computed: {
@@ -54,6 +66,11 @@ export default {
       return `https://firebasestorage.googleapis.com/v0/b/big-fish-79423.appspot.com/o/${this.imageName}?alt=media&token=7748ae36-118b-441c-aafc-bc827bda53e1`;
     },
   },
+  data() {
+    return {
+      isRemoving: false
+    }
+  }
 };
 </script>
 
@@ -119,7 +136,24 @@ img {
   height: 200px;
 }
 
+.buttons-box {
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: -1;
+  transition: all 0.5s ease-in-out;
+}
+
 .image-box:hover {
   cursor: pointer;
+}
+
+.card:hover > .buttons-box {
+  transform: translateY(25px);
+  transition: all 0.5s ease-in-out;
 }
 </style>
