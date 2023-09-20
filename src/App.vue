@@ -2,6 +2,7 @@
   <body>
     <header></header>
     <main>
+      <image-preview :imageUrl="imageUrl" :setImageUrl="setImageUrl" v-if="imageUrl !== ''"></image-preview>
       <search-box :filterFishes="filterFishes"></search-box>
       <h1>Ryby</h1>
       <grid-layout v-if="!isLoading">
@@ -17,6 +18,7 @@
           :additionalInfo="fish.additionalInfo"
           :imageName="fish.imageName"
           :date="fish.date"
+          :setImageUrl="this.setImageUrl"
         ></fish-item>
       </grid-layout>
       <grid-layout v-else>
@@ -39,7 +41,7 @@ import GridLayout from "./components/layout/GridLayout.vue";
 import FishForm from "./components/FishForm.vue";
 import SearchBox from "./components/SearchBox.vue";
 import SummaryBox from "./components/SummaryBox.vue";
-// import BaseSpinner from "./components/UI/BaseSpinner.vue";
+import ImagePreview from "./components/ImagePreview.vue";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
@@ -50,6 +52,7 @@ export default {
     GridLayout,
     SearchBox,
     SummaryBox,
+    ImagePreview,
     // BaseSpinner
   },
 
@@ -86,9 +89,13 @@ export default {
       totalWeight: 0,
       fishCount: 0,
       maxFishWeight: 0,
+      imageUrl: '',
     };
   },
   methods: {
+    setImageUrl(imageUrl){
+      this.imageUrl = imageUrl
+    },  
     filterFishes(owner, type, minWeight, maxWeight) {
       let filteredFishes = [...this.fishes];
       if (owner && owner !== "") {

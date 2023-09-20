@@ -1,6 +1,6 @@
 <template>
   <base-card>
-    <div class="image-box">
+    <div class="image-box" @click="onClickImage">
       <img :src="imageUrl" />
     </div>
     <div class="info-box">
@@ -30,7 +30,22 @@
 
 <script>
 export default {
-  props: ["id", "owner", "weight", "type", "bait", "additionalInfo", "imageName", "date"],
+  props: [
+    "id",
+    "owner",
+    "weight",
+    "type",
+    "bait",
+    "additionalInfo",
+    "imageName",
+    "date",
+    "setImageUrl",
+  ],
+  methods: {
+    onClickImage() {
+      this.setImageUrl(this.imageUrl)
+    },
+  },
   computed: {
     formattedDate() {
       return this.date.toLocaleString("pl-PL");
@@ -91,6 +106,8 @@ img {
   object-fit: cover;
   width: 100%;
   height: 100%;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
   /* min-height: 100px; */
 }
 
@@ -100,5 +117,9 @@ img {
   left: 0;
   right: 0;
   height: 200px;
+}
+
+.image-box:hover {
+  cursor: pointer;
 }
 </style>
