@@ -26,7 +26,7 @@
       <div class="bottom-box">
         <div>{{ formattedDate }}</div>
       </div>
-      <div class="buttons-box">
+      <div class="buttons-box" v-if="isAuth">
         <button class="btn btn-danger" @click="removeFish">Usuń</button>
       </div>
     </base-card>
@@ -46,16 +46,16 @@ export default {
     "date",
     "setImageUrl",
     "deleteFish",
-    "setIsEditing"
+    "setIsEditing",
   ],
   methods: {
     onClickImage() {
       this.setImageUrl(this.imageUrl);
     },
     async removeFish() {
-      this.setIsEditing(true)
+      this.setIsEditing(true);
       await this.deleteFish(this.id);
-      this.setIsEditing(false)
+      this.setIsEditing(false);
     },
   },
   computed: {
@@ -65,12 +65,15 @@ export default {
     imageUrl() {
       return `https://firebasestorage.googleapis.com/v0/b/big-fish-79423.appspot.com/o/${this.imageName}?alt=media&token=7748ae36-118b-441c-aafc-bc827bda53e1`;
     },
+    isAuth() {
+      return this.$store.getters.userIsLoggedIn;
+    },
   },
   data() {
     return {
-      isRemoving: false
-    }
-  }
+      isRemoving: false,
+    };
+  },
 };
 </script>
 

@@ -1,12 +1,14 @@
 <template>
   <nav>
     <ul>
-      <li>Ryby</li>
+      <li>
+        <router-link to="/" class="link">Ryby</router-link>
+      </li>
       <li v-if="!isAuth">
-        <router-link to="/login" class='link'> Zaloguj się</router-link>
+        <router-link to="/login" class="link">Zaloguj się</router-link>
       </li>
       <li v-else>
-        <router-link to="/"  class='link'> Zaloguj się</router-link>
+        <router-link to="/" class="link" @click="logout">Wyloguj się</router-link>
       </li>
     </ul>
   </nav>
@@ -14,9 +16,13 @@
 
 <script>
 export default {
+  methods: {
+    logout() {
+      this.$store.dispatch('logout')
+    }
+  },
   computed: {
     isAuth() {
-      // console.log(this.$store.getters)
       return this.$store.getters.userIsLoggedIn;
     },
   },
@@ -35,7 +41,7 @@ li:hover {
   cursor: pointer;
   font-weight: bold;
 }
-.link{
+.link {
   text-decoration: none;
   color: black;
 }

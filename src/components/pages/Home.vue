@@ -12,7 +12,11 @@
     <search-box :filterFishes="filterFishes"></search-box>
     <h1>Ryby</h1>
     <grid-layout v-if="!isLoading">
-      <fish-form :addNewFish="addNewFish" :setIsEditing="setIsEditing"></fish-form>
+      <fish-form
+        v-if="isAuth"
+        :addNewFish="addNewFish"
+        :setIsEditing="setIsEditing"
+      ></fish-form>
       <fish-item
         v-for="fish in filteredFishes"
         :key="fish.id"
@@ -100,6 +104,11 @@ export default {
       maxFishWeight: 0,
       imageUrl: "",
     };
+  },
+  computed: {
+    isAuth() {
+      return this.$store.getters.userIsLoggedIn;
+    },
   },
   methods: {
     setIsEditing(isEditing) {
